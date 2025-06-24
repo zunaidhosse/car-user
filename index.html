@@ -10,7 +10,7 @@
   <!-- Theme Color for Browser UI -->
   <meta name="theme-color" content="#2f80ed"/>
   <!-- Apple-specific meta tags for PWA -->
-  <link rel="apple-touch-icon" href="images/icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png"> <!-- পরিবর্তিত পাথ -->
   <meta name="apple-mobile-web-app-status-bar" content="#2f80ed">
 
   <link rel="stylesheet" href="style.css" />
@@ -63,6 +63,7 @@
   </style>
 </head>
 <body>
+  <!-- আপনার বডির বাকি কন্টেন্ট আগের মতই থাকবে -->
   <div class="container">
     <div id="carEmojiHeader" class="emoji-header">🚗</div>
     <h2>Enter Your Car Number</h2>
@@ -82,21 +83,17 @@
     </div>
   </div>
   
-  <!-- অ্যাপ ইনস্টল করার জন্য পপ-আপ -->
   <div id="install-popup">
       <button id="close-install-popup" onclick="this.parentElement.style.display='none'">×</button>
       <p>Get our free app! It's fast and works offline.</p>
       <button id="install-btn">Download App</button>
   </div>
 
-
-  <!-- Firebase মডিউল লোড করা হচ্ছে -->
+  <!-- আপনার স্ক্রিপ্ট ট্যাগ এবং এর ভেতরের কোড অপরিবর্তিত থাকবে -->
   <script type="module">
-    // firebase.js থেকে প্রয়োজনীয় ফাংশন ইম্পোর্ট করা হচ্ছে
+    // ... আপনার সম্পূর্ণ Firebase মডিউল স্ক্রিপ্ট এখানে থাকবে ...
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-
-    // Firebase কনফিগারেশন এখানেও দেওয়া হলো
     const firebaseConfig = {
       apiKey: "AIzaSyBKXXxw_K4nZyczAm9DrU5pCkP7YmOETFc",
       authDomain: "tast-2f7bf.firebaseapp.com",
@@ -107,72 +104,56 @@
       appId: "1:848111042845:web:7a65cdd7360974faefe1f4",
       measurementId: "G-BBQ6L0CK5L"
     };
-
-    // Firebase ইনিশিয়ালাইজ করুন
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
     async function loadUser() {
       const id = document.getElementById("userIdInput").value.trim();
       if (!id) {
           alert("Please enter your car number.");
           return;
       }
-      
       try {
-        const userRef = ref(db, 'users/' + id); // সঠিক রেফারেন্স তৈরি
-        const snapshot = await get(userRef); // ডেটা আনা
-
+        const userRef = ref(db, 'users/' + id);
+        const snapshot = await get(userRef);
         if (snapshot.exists()) {
           const user = snapshot.val();
-
-          // UI আপডেট করা
           document.getElementById("inputSection").style.display = "none";
           document.getElementById("userData").classList.remove("hidden");
           document.getElementById("userName").innerText = `Welcome, ${user.name}`;
-
           const carEmoji = user.car || "🚗";
           const carCount = user.count || 0;
           const emojiArea = document.getElementById("carEmojiHeader");
           emojiArea.innerHTML = carCount > 0 ? (carEmoji + " ").repeat(carCount) : carEmoji;
-
           const percentage = Math.min((carCount / 5) * 100, 100);
           const progressBar = document.getElementById("progressBar");
           progressBar.style.width = `${percentage}%`;
           progressBar.innerText = `${Math.round(percentage)}%`;
-
           const message = document.getElementById("messageArea");
           if (carCount >= 5) {
             message.innerText = "🎉 Congratulations! One Car Wash Free!";
           } else {
             message.innerText = `You need ${5 - carCount} more washes for a free one.`;
           }
-
         } else {
           alert("User not found!");
         }
       } catch (error) {
-        // এরর হলে কনসোলে দেখানো হবে
         console.error("Error fetching user data:", error);
         alert("Could not fetch data. Please try again.");
       }
     }
-
     function resetView() {
       document.getElementById("userIdInput").value = "";
       document.getElementById("inputSection").style.display = "block";
       document.getElementById("userData").classList.add("hidden");
       document.getElementById("carEmojiHeader").innerHTML = "🚗";
     }
-
-    // ফাংশনগুলোকে গ্লোবালি অ্যাক্সেসযোগ্য করা
     window.loadUser = loadUser;
     window.resetView = resetView;
   </script>
 
-  <!-- PWA এর জন্য সার্ভিস ওয়ার্কার এবং ইনস্টল প্রম্পট স্ক্রিপ্ট -->
   <script>
-    // 1. সার্ভিস ওয়ার্কার রেজিস্টার করা
+    // ... আপনার PWA ইনস্টল স্ক্রিপ্ট এখানে অপরিবর্তিত থাকবে ...
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
@@ -184,27 +165,17 @@
           });
       });
     }
-
-    // 2. কাস্টম ইনস্টল পপ-আপের জন্য কোড
     let deferredPrompt;
     const installPopup = document.getElementById('install-popup');
     const installBtn = document.getElementById('install-btn');
-
     window.addEventListener('beforeinstallprompt', (e) => {
-      // ডিফল্ট ব্রাউজার প্রম্পট দেখানো বন্ধ করুন
       e.preventDefault();
-      // ইভেন্টটি পরে ব্যবহারের জন্য সংরক্ষণ করুন
       deferredPrompt = e;
-      // কাস্টম পপ-আপ দেখান
       installPopup.style.display = 'block';
     });
-
     installBtn.addEventListener('click', () => {
-      // পপ-আপ লুকিয়ে ফেলুন
       installPopup.style.display = 'none';
-      // ইনস্টল প্রম্পট দেখান
       deferredPrompt.prompt();
-      // প্রম্পটের ফলাফলের জন্য অপেক্ষা করুন
       deferredPrompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
           console.log('User accepted the install prompt');
