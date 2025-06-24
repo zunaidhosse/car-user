@@ -6,8 +6,8 @@ const urlsToCache = [
   '/index.html',
   '/style.css',
   '/firebase.js',
-  '/images/icon-192.png',
-  '/images/icon-512.png',
+  '/icon-192.png',  // পরিবর্তিত পাথ
+  '/icon-512.png',  // পরিবর্তিত পাথ
   'https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js',
   'https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js'
 ];
